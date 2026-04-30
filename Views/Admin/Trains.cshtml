@@ -1,0 +1,45 @@
+@model List<MetroFlow.Models.Train>
+@{ ViewData["Title"] = "Qatarlar"; }
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 class="fw-bold"><i class="bi bi-train-front me-2 text-info"></i>Qatarlar</h4>
+        <div class="d-flex gap-2">
+            <a asp-action="CreateTrain" class="btn btn-info btn-sm text-white"><i class="bi bi-plus me-1"></i>Yeni Qatar</a>
+            <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Dashboard</a>
+        </div>
+    </div>
+    <div class="card border-0 shadow-sm rounded-4">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-dark">
+                    <tr><th>Nömrə</th><th>Xətt</th><th>Tutum</th><th>Cari Sərnişin</th><th>Dolulluq</th><th>Status</th><th>Əməliyyat</th></tr>
+                </thead>
+                <tbody>
+                    @foreach (var t in Model)
+                    {
+                        <tr>
+                            <td class="fw-semibold">@t.TrainNumber</td>
+                            <td><span class="badge" style="background:@(t.Line=="Qırmızı"?"#dc3545":"#198754")">@t.Line</span></td>
+                            <td>@t.Capacity</td>
+                            <td>@t.CurrentPassengers</td>
+                            <td>
+                                <div class="progress" style="height:8px;width:80px;">
+                                    <div class="progress-bar bg-@t.BadgeClass" style="width:@t.OccupancyPercent%"></div>
+                                </div>
+                                <small>@t.OccupancyPercent%</small>
+                            </td>
+                            <td><span class="badge bg-@(t.IsActive?"success":"danger")">@(t.IsActive?"Aktiv":"Deaktiv")</span></td>
+                            <td>
+                                <a asp-action="EditTrain" asp-route-id="@t.Id" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></a>
+                                <form asp-action="DeleteTrain" asp-route-id="@t.Id" method="post" class="d-inline">
+                                    @Html.AntiForgeryToken()
+                                    <button class="btn btn-sm btn-outline-danger" onclick="return confirm('Silmək istəyirsiniz?')"><i class="bi bi-trash"></i></button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,106 @@
+@model MetroFlow.Models.ViewModels.RegisterViewModel
+@{ ViewData["Title"] = "Qeydiyyat"; Layout = "_Layout"; }
+
+<div class="min-vh-100 d-flex align-items-center py-5" style="background:linear-gradient(135deg,#1e3a5f,#2563eb);">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-5">
+                <div class="card shadow-lg border-0 rounded-4">
+                    <div class="card-body p-4 p-md-5">
+                        <div class="text-center mb-4">
+                            <div class="display-6 text-primary"><i class="bi bi-person-plus-fill"></i></div>
+                            <h3 class="fw-bold mt-2">Qeydiyyat</h3>
+                            <p class="text-muted">Yeni hesab yaradın</p>
+                        </div>
+
+                        <form asp-action="Register" method="post">
+                            @Html.AntiForgeryToken()
+                            <div asp-validation-summary="All" class="alert alert-danger py-2 small"></div>
+
+                            <div class="mb-3">
+                                <label asp-for="FullName" class="form-label fw-semibold"></label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-person"></i></span>
+                                    <input asp-for="FullName" class="form-control" placeholder="Ad Soyad" />
+                                </div>
+                                <span asp-validation-for="FullName" class="text-danger small"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="Email" class="form-label fw-semibold"></label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                                    <input asp-for="Email" class="form-control" placeholder="email@example.com" />
+                                </div>
+                                <span asp-validation-for="Email" class="text-danger small"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="Password" class="form-label fw-semibold"></label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                                    <input asp-for="Password" class="form-control" placeholder="Minimum 6 simvol" id="pwd1" />
+                                    <button type="button" class="btn btn-outline-secondary" onclick="togglePwd('pwd1','eye1')"><i class="bi bi-eye" id="eye1"></i></button>
+                                </div>
+                                <span asp-validation-for="Password" class="text-danger small"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="ConfirmPassword" class="form-label fw-semibold"></label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+                                    <input asp-for="ConfirmPassword" class="form-control" placeholder="Şifrəni təkrarlayın" id="pwd2" />
+                                    <button type="button" class="btn btn-outline-secondary" onclick="togglePwd('pwd2','eye2')"><i class="bi bi-eye" id="eye2"></i></button>
+                                </div>
+                                <span asp-validation-for="ConfirmPassword" class="text-danger small"></span>
+                            </div>
+
+                            <div class="row g-2 mb-4">
+                                <div class="col-6">
+                                    <label asp-for="HomeStation" class="form-label fw-semibold"></label>
+                                    <select asp-for="HomeStation" class="form-select">
+                                        <option value="">Seçin...</option>
+                                        <option>İçərişəhər</option><option>Sahil</option><option>28 May</option>
+                                        <option>Gənclik</option><option>Nəriman Nərimanov</option>
+                                        <option>Elmlər Akademiyası</option><option>İnşaatçılar</option>
+                                        <option>Əhmədli</option><option>Hövsan</option><option>8 Noyabr</option>
+                                        <option>Avtovağzal</option><option>Memar Əcəmi</option>
+                                    </select>
+                                </div>
+                                <div class="col-6">
+                                    <label asp-for="WorkStation" class="form-label fw-semibold"></label>
+                                    <select asp-for="WorkStation" class="form-select">
+                                        <option value="">Seçin...</option>
+                                        <option>İçərişəhər</option><option>Sahil</option><option>28 May</option>
+                                        <option>Gənclik</option><option>Nəriman Nərimanov</option>
+                                        <option>Elmlər Akademiyası</option><option>İnşaatçılar</option>
+                                        <option>Əhmədli</option><option>Hövsan</option><option>8 Noyabr</option>
+                                        <option>Avtovağzal</option><option>Memar Əcəmi</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold">
+                                <i class="bi bi-person-plus me-2"></i>Qeydiyyatdan Keç
+                            </button>
+                        </form>
+
+                        <hr class="my-4" />
+                        <p class="text-center mb-0 small">
+                            Hesabınız var? <a asp-action="Login" class="text-primary fw-semibold">Giriş edin</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+<script>
+function togglePwd(id, eye) {
+    const i = document.getElementById(id), e = document.getElementById(eye);
+    i.type = i.type === 'password' ? 'text' : 'password';
+    e.className = i.type === 'password' ? 'bi bi-eye' : 'bi bi-eye-slash';
+}
+</script>
+}

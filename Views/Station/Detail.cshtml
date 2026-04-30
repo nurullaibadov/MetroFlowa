@@ -1,0 +1,119 @@
+@model MetroFlow.Models.ViewModels.StationDetailViewModel
+@{ ViewData["Title"] = Model.Station.Name; }
+<div class="container py-5">
+    <div class="row g-4">
+        <!-- Left Panel -->
+        <div class="col-md-5">
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div>
+                            <h4 class="fw-bold mb-1">@Model.Station.Name</h4>
+                            <small class="text-muted">
+                                <i class="bi bi-circle-fill me-1" style="color:@(Model.Station.Line=="Qırmızı"?"#dc3545":"#198754");font-size:8px;"></i>
+                                @Model.Station.Line Xətt
+                            </small>
+                        </div>
+                        <span class="badge bg-@Model.Station.BadgeClass fs-6 px-3 py-2">@Model.Station.CrowdLevelAz</span>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="text-muted small">Dolululuq</span>
+                            <strong style="color:@Model.Station.CrowdColor">@Model.Station.OccupancyPercent%</strong>
+                        </div>
+                        <div class="progress" style="height:12px;border-radius:6px;">
+                            <div class="progress-bar" role="progressbar"
+                                 style="width:@Model.Station.OccupancyPercent%;background:@Model.Station.CrowdColor;border-radius:6px;"
+                                 aria-valuenow="@Model.Station.OccupancyPercent" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </div>
+
+                    <div class="row g-2 text-center mb-3">
+                        <div class="col-6">
+                            <div class="bg-light rounded-3 p-2">
+                                <div class="fw-bold fs-5">@Model.Station.CurrentOccupancy</div>
+                                <small class="text-muted">Cari nəfər</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="bg-light rounded-3 p-2">
+                                <div class="fw-bold fs-5">@Model.Station.Capacity</div>
+                                <small class="text-muted">Maksimum</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="alert @(Model.Station.OccupancyPercent>=90?"alert-danger":Model.Station.OccupancyPercent>=70?"alert-warning":"alert-success") rounded-3 mb-0">
+                        <small>@Model.Recommendation</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Logs -->
+            @if (Model.RecentLogs.Any())
+            {
+                <div class="card border-0 shadow-sm rounded-4 mt-3">
+                    <div class="card-header"><h6 class="mb-0">Son Məlumatlar</h6></div>
+                    <ul class="list-group list-group-flush">
+                        @foreach (var log in Model.RecentLogs.Take(5))
+                        {
+                            <li class="list-group-item d-flex justify-content-between small py-2">
+                                <span>@log.RecordedAt.ToString("HH:mm")</span>
+                                <span class="fw-bold">@log.OccupancyPercent%</span>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            }
+        </div>
+
+        <!-- Right Panel - Upcoming Trains -->
+        <div class="col-md-7">
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-header bg-primary text-white rounded-top-4 p-3">
+                    <h5 class="mb-0"><i class="bi bi-train-front me-2"></i>Növbəti Qatarlar</h5>
+                </div>
+                <div class="card-body p-0">
+                    @if (!Model.UpcomingTrains.Any())
+                    {
+                        <p class="text-center text-muted py-4">Bu gün üçün başqa qatar yoxdur.</p>
+                    }
+                    else
+                    {
+                        <ul class="list-group list-group-flush">
+                            @foreach (var train in Model.UpcomingTrains)
+                            {
+                                <li class="list-group-item p-3">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <strong class="d-block">@train.ArrivalTimeStr</strong>
+                                            <small class="text-muted">Qatar: @train.Train?.TrainNumber</small>
+                                            @if (train.IsPeakHour)
+                                            {
+                                                <span class="badge bg-warning text-dark ms-2 small">Pik Saat</span>
+                                            }
+                                        </div>
+                                        <div class="text-end">
+                                            <span class="badge bg-@(train.PredictedOccupancyPercent>=90?"danger":train.PredictedOccupancyPercent>=70?"warning":"success") mb-1">
+                                                ~@train.PredictedOccupancyPercent%
+                                            </span>
+                                            <div class="progress" style="height:4px;width:80px;">
+                                                <div class="progress-bar @(train.PredictedOccupancyPercent>=90?"bg-danger":train.PredictedOccupancyPercent>=70?"bg-warning":"bg-success")"
+                                                     style="width:@train.PredictedOccupancyPercent%"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            }
+                        </ul>
+                    }
+                </div>
+            </div>
+
+            <a asp-controller="Station" asp-action="Index" class="btn btn-outline-primary mt-3">
+                <i class="bi bi-arrow-left me-2"></i>Bütün Stansiyalar
+            </a>
+        </div>
+    </div>
+</div>

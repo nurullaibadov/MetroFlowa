@@ -1,0 +1,37 @@
+@model List<MetroFlow.Models.Station>
+@{ ViewData["Title"] = "Metro Xəritəsi"; }
+<div class="container-fluid p-0">
+    <div id="map" style="height:calc(100vh - 56px);width:100%;"></div>
+</div>
+
+@section Scripts {
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+    const map = L.map('map').setView([40.395, 49.870], 13);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    const stations = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Select(s => new {
+        name = s.Name,
+        lat  = s.Latitude ?? 40.395,
+        lng  = s.Longitude ?? 49.870,
+        pct  = s.OccupancyPercent,
+        color = s.CrowdColor,
+        level = s.CrowdLevelAz,
+        id    = s.Id
+    })));
+
+    stations.forEach(s => {
+        const icon = L.divIcon({
+            className: '',
+            html: `<div style="background:${s.color};color:#fff;border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:11px;border:2px solid white;box-shadow:0 2px 6px rgba(0,0,0,.4)">${Math.round(s.pct)}%</div>`,
+            iconSize: [36,36], iconAnchor: [18,18]
+        });
+        L.marker([s.lat, s.lng], {icon})
+         .addTo(map)
+         .bindPopup(`<strong>${s.name}</strong><br>Dolululuq: <b style="color:${s.color}">${s.pct}% — ${s.level}</b><br><a href="/Station/Detail/${s.id}">Detallar →</a>`);
+    });
+</script>
+}

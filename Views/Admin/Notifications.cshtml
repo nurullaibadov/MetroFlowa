@@ -1,0 +1,62 @@
+@model List<MetroFlow.Models.Notification>
+@{ ViewData["Title"] = "Bildirişlər"; }
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 class="fw-bold"><i class="bi bi-bell me-2 text-danger"></i>Bildirişlər</h4>
+        <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Dashboard</a>
+    </div>
+
+    <!-- Broadcast Form -->
+    <div class="card border-0 shadow-sm rounded-4 mb-4">
+        <div class="card-header bg-danger text-white rounded-top-4">
+            <h6 class="mb-0"><i class="bi bi-megaphone me-2"></i>Bütün İstifadəçilərə Bildiriş Göndər</h6>
+        </div>
+        <div class="card-body p-4">
+            <form asp-action="SendBroadcast" method="post" class="row g-3">
+                @Html.AntiForgeryToken()
+                <div class="col-md-3">
+                    <input name="title" class="form-control" placeholder="Başlıq" required />
+                </div>
+                <div class="col-md-5">
+                    <input name="message" class="form-control" placeholder="Mesaj..." required />
+                </div>
+                <div class="col-md-2">
+                    <select name="type" class="form-select">
+                        <option value="Info">Info</option>
+                        <option value="Warning" selected>Warning</option>
+                        <option value="Danger">Danger</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-danger w-100">
+                        <i class="bi bi-send me-1"></i>Göndər
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Notifications List -->
+    <div class="card border-0 shadow-sm rounded-4">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-dark">
+                    <tr><th>İstifadəçi</th><th>Başlıq</th><th>Mesaj</th><th>Növ</th><th>Tarix</th><th>Oxunub</th></tr>
+                </thead>
+                <tbody>
+                    @foreach (var n in Model)
+                    {
+                        <tr>
+                            <td>@n.User?.FullName</td>
+                            <td class="fw-semibold">@n.Title</td>
+                            <td class="small">@n.Message</td>
+                            <td><span class="badge bg-@(n.Type=="Danger"?"danger":n.Type=="Warning"?"warning":"info")">@n.Type</span></td>
+                            <td class="small">@n.CreatedAt.ToString("dd.MM HH:mm")</td>
+                            <td><i class="bi bi-@(n.IsRead?"check-circle-fill text-success":"circle text-muted")"></i></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

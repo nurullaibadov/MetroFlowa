@@ -1,0 +1,76 @@
+@model MetroFlow.Models.ViewModels.LoginViewModel
+@{ ViewData["Title"] = "Giriş"; Layout = "_Layout"; }
+
+<div class="min-vh-100 d-flex align-items-center" style="background:linear-gradient(135deg,#1e3a5f,#2563eb);">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-5 col-lg-4">
+                <div class="card shadow-lg border-0 rounded-4">
+                    <div class="card-body p-4 p-md-5">
+                        <div class="text-center mb-4">
+                            <div class="display-6 text-primary"><i class="bi bi-train-front-fill"></i></div>
+                            <h3 class="fw-bold mt-2">MetroFlow</h3>
+                            <p class="text-muted">Hesabınıza daxil olun</p>
+                        </div>
+
+                        <form asp-action="Login" method="post">
+                            <input type="hidden" name="returnUrl" value="@ViewBag.ReturnUrl" />
+                            @Html.AntiForgeryToken()
+
+                            <div asp-validation-summary="All" class="alert alert-danger py-2 small"></div>
+
+                            <div class="mb-3">
+                                <label asp-for="Email" class="form-label fw-semibold"></label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                                    <input asp-for="Email" class="form-control" placeholder="email@example.com" />
+                                </div>
+                                <span asp-validation-for="Email" class="text-danger small"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="Password" class="form-label fw-semibold"></label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                                    <input asp-for="Password" class="form-control" placeholder="••••••" id="pwdInput" />
+                                    <button type="button" class="btn btn-outline-secondary" onclick="togglePwd()">
+                                        <i class="bi bi-eye" id="eyeIcon"></i>
+                                    </button>
+                                </div>
+                                <span asp-validation-for="Password" class="text-danger small"></span>
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <div class="form-check">
+                                    <input asp-for="RememberMe" class="form-check-input" />
+                                    <label asp-for="RememberMe" class="form-check-label small">Məni xatırla</label>
+                                </div>
+                                <a asp-action="ForgotPassword" class="text-primary small text-decoration-none">Şifrəni unutdum?</a>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold">
+                                <i class="bi bi-box-arrow-in-right me-2"></i>Daxil Ol
+                            </button>
+                        </form>
+
+                        <hr class="my-4" />
+                        <p class="text-center mb-0 small">
+                            Hesabınız yoxdur?
+                            <a asp-action="Register" class="text-primary fw-semibold">Qeydiyyat</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+<script>
+function togglePwd() {
+    const i = document.getElementById('pwdInput');
+    const e = document.getElementById('eyeIcon');
+    i.type = i.type === 'password' ? 'text' : 'password';
+    e.className = i.type === 'password' ? 'bi bi-eye' : 'bi bi-eye-slash';
+}
+</script>
+}
